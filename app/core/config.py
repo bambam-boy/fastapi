@@ -8,10 +8,15 @@ class Configs(BaseSettings):
     DB_PASSWORD:str
     DB_PATH:str
 
+
+
+    API_PATH:str="/api"
+    PROJECT_TITLE:str="website"
+
     
     model_config=SettingsConfigDict(
         env_file=".env",
-        env_file_encoding="uft-8"
+        env_file_encoding="utf-8"
     )
 
 
