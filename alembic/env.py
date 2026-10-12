@@ -29,7 +29,8 @@ target_metadata = Base.metadata
 # ... etc.
 
 def get_url()->str:
-    return f"postgresql+asyncpg://{settings.DB_USERNAME}:{settings.DB_PASSWORD}@{settings.DB_HOST}:{settings.DB_PORT}/{settings.DB_PATH}"
+    return settings.SQLALCHEMY_URL_ASYNC
+
 
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode.
