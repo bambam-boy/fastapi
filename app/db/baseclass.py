@@ -23,3 +23,4 @@ class Base(DeclarativeBase):
         DateTime,
         onupdate=datetime.utcnow,
         default=datetime.utcnow)
+    is_deleted:Mapped[bool]=mapped_column(default=False,nullable=False)
