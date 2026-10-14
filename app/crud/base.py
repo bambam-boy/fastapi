@@ -21,13 +21,13 @@ class CRUDBase(Generic[ModelType,ModelCreateType,ModelUpdateType]):
     def commit_and_refresh(self,db_obj:ModelType,db:Session|AsyncSession)->ModelType|Awaitable[ModelType]:
         if isinstance(db,AsyncSession):
             return self.commit_and_refresh_async(db_obj,db)
-        db.commit(db_obj)
+        db.commit()
         db.refresh(db_obj)
         return db_obj
 
 
     async def commit_and_refresh_async(self,db_obj:ModelType,db:AsyncSession)->ModelType:
-        await db.commit(db_obj)
+        await db.commit()
         await db.refresh(db_obj)
         return db_obj
 
@@ -128,7 +128,7 @@ class CRUDBase(Generic[ModelType,ModelCreateType,ModelUpdateType]):
         
     async def create_async(self,db:AsyncSession,values:ModelCreateType)->ModelType:
         db_obj=self.model(**values.model_dump(exclude_unset=True))
-        await db.add(db_obj)
+        db.add(db_obj)
         return await self.commit_and_refresh_async(db_obj,db)
 
 
