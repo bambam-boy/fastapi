@@ -446,6 +446,22 @@ wheels = [
 ]
 
 [[package]]
+name = "fastapi-redis-sdk"
+version = "0.9.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "anyio" },
+    { name = "fastapi" },
+    { name = "pydantic" },
+    { name = "pydantic-settings" },
+    { name = "redis" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/91/93/c6366dc30b7441a2757b3b8ff385865d0e9505d5fc91f70c6ccf30ef229b/fastapi_redis_sdk-0.9.0.tar.gz", hash = "sha256:6fc7e5cfbf1d1baade7b07feeea3b8c24d40ce8befced79799b0064512b794dd", size = 95575, upload-time = "2026-10-14T15:39:32.954Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/95/fa/e0ec7b86db992f1486430a1e363978689627910b5ec8f74f23cd64852a48/fastapi_redis_sdk-0.9.0-py3-none-any.whl", hash = "sha256:d08ed2155b26449c64b17d8a77fdee3befb4ff0afbc3cdf9670c22601a6b045f", size = 102568, upload-time = "2026-10-14T15:39:31.338Z" },
+]
+
+[[package]]
 name = "fastapi-users"
 version = "15.0.5"
 source = { registry = "https://pypi.org/simple" }
@@ -854,6 +870,7 @@ dependencies = [
     { name = "asyncpg" },
     { name = "celery" },
     { name = "fastapi" },
+    { name = "fastapi-redis-sdk" },
     { name = "fastapi-users" },
     { name = "pydantic-settings" },
     { name = "redis" },
@@ -867,6 +884,7 @@ requires-dist = [
     { name = "asyncpg", specifier = ">=0.32.0" },
     { name = "celery", specifier = ">=5.6.3" },
     { name = "fastapi", specifier = ">=0.143.0" },
+    { name = "fastapi-redis-sdk", specifier = ">=0.9.0" },
     { name = "fastapi-users", specifier = ">=15.0.5" },
     { name = "pydantic-settings", specifier = ">=2.15.0" },
     { name = "redis", specifier = ">=8.1.0" },

@@ -9,7 +9,7 @@ class Configs(BaseSettings):
     DB_PASSWORD:str
     DB_PATH:str
 
-
+    REDIS_URL:str
 
     API_PATH:str="/api"
     PROJECT_TITLE:str="website"
