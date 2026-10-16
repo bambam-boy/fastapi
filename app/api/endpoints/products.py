@@ -15,7 +15,7 @@ router=APIRouter()
     "/get/multi",
     dependencies=[
         Depends(rate_limit("100/minute")),
-        Depends(cache(eviction_group="products",key_builder=default_key_builder))
+        Depends(cache(eviction_group="products",ttl=600))
     ]
 )
 async def get_multi_products(db:AsyncSession=Depends(get_session),skip:int=0,limit:int=100,asc:bool=False):
@@ -23,10 +23,32 @@ async def get_multi_products(db:AsyncSession=Depends(get_session),skip:int=0,lim
 
 
 @router.get(
+    "/get/price",    
+    dependencies=[
+        Depends(rate_limit("100/minute")),
+        Depends(cache(eviction_group="products",ttl=600))
+    ]
+)
+async def get_products_by_price(db:AsyncSession=Depends(get_session),skip:int=0,limit:int=100,asc:bool=False,max:int=1000000):
+    return await crud.products.get_products_by_price_async(db,max,skip,limit,asc)
+
+
+@router.get(
+    "/get/name",    
+    dependencies=[
+        Depends(rate_limit("100/minute")),
+        Depends(cache(eviction_group="products",ttl=600))
+    ]
+)
+async def get_products_by_name(name:str,db:AsyncSession=Depends(get_session),skip:int=0,limit:int=100):
+    return await crud.products.get_products_be_name_async(db,name,skip,limit)
+
+
+@router.get(
     "/get/id",
     dependencies=[
         Depends(rate_limit("100/minute")),
-        Depends(cache(eviction_group="products",key_builder=default_key_builder))
+        Depends(cache(eviction_group="products",ttl=600))
     ]
 )
 async def get_product_by_id(id:str,db:AsyncSession=Depends(get_session)):
@@ -37,7 +59,7 @@ async def get_product_by_id(id:str,db:AsyncSession=Depends(get_session)):
     "/add/single",
     dependencies=[
         Depends(rate_limit("80/minute")),
-        Depends(cache_evict(eviction_group="products",key_builder=default_key_builder))
+        Depends(cache_evict(eviction_group="products",ttl=600))
     ]
 )
 async def insert_single_product(value:ProductsCreate,db:AsyncSession=Depends(get_session)):
@@ -48,7 +70,7 @@ async def insert_single_product(value:ProductsCreate,db:AsyncSession=Depends(get
     "/add/multi",
     dependencies=[
         Depends(rate_limit("80/minute")),
-        Depends(cache_evict(eviction_group="products",key_builder=default_key_builder))
+        Depends(cache_evict(eviction_group="products",ttl=600))
     ]
 )
 async def insert_multi_products(values:list[ProductsCreate],db:AsyncSession=Depends(get_session)):
@@ -63,7 +85,7 @@ async def insert_multi_products(values:list[ProductsCreate],db:AsyncSession=Depe
     "/update/id",
     dependencies=[
         Depends(rate_limit("60/minute")),
-        Depends(cache_evict(eviction_group="products",key_builder=default_key_builder))
+        Depends(cache_evict(eviction_group="products",ttl=600))
     ]
 )
 async def update_product_by_id(id:str,update_model:ProductsUpdate,db:AsyncSession=Depends(get_session)):
@@ -75,8 +97,10 @@ async def update_product_by_id(id:str,update_model:ProductsUpdate,db:AsyncSessio
     "/delete/id",
     dependencies=[
         Depends(rate_limit("60/minute")),
-        Depends(cache_evict(eviction_group="products",key_builder=default_key_builder))
+        Depends(cache_evict(eviction_group="products",ttl=600))
     ]
 )
 async def delele_proudtc_by_id(id:str,db:AsyncSession=Depends(get_session)):
     return await crud.products.remove_async(db,id)
+
+
