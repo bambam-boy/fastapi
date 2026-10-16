@@ -4,17 +4,16 @@ from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.session import get_session
 from app.schemas.products import ProductsCreate,ProductsUpdate
-from redis_fastapi import cache,cache_evict,rate_limit,default_key_builder
+from redis_fastapi import cache,cache_evict,rate_limit
 
 
 router=APIRouter()
 
 
-#TODO check if its useing too motch mem
 @router.get(
     "/get/multi",
     dependencies=[
-        Depends(rate_limit("100/minute")),
+        Depends(rate_limit("50/minute")),
         Depends(cache(eviction_group="products",ttl=600))
     ]
 )
@@ -25,7 +24,7 @@ async def get_multi_products(db:AsyncSession=Depends(get_session),skip:int=0,lim
 @router.get(
     "/get/price",    
     dependencies=[
-        Depends(rate_limit("100/minute")),
+        Depends(rate_limit("50/minute")),
         Depends(cache(eviction_group="products",ttl=600))
     ]
 )
@@ -36,7 +35,7 @@ async def get_products_by_price(db:AsyncSession=Depends(get_session),skip:int=0,
 @router.get(
     "/get/name",    
     dependencies=[
-        Depends(rate_limit("100/minute")),
+        Depends(rate_limit("50/minute")),
         Depends(cache(eviction_group="products",ttl=600))
     ]
 )
@@ -47,7 +46,7 @@ async def get_products_by_name(name:str,db:AsyncSession=Depends(get_session),ski
 @router.get(
     "/get/id",
     dependencies=[
-        Depends(rate_limit("100/minute")),
+        Depends(rate_limit("50/minute",on_limit_exceeded={"hint":"too many reqs from you wait a bit"})),
         Depends(cache(eviction_group="products",ttl=600))
     ]
 )
@@ -58,8 +57,8 @@ async def get_product_by_id(id:str,db:AsyncSession=Depends(get_session)):
 @router.post(
     "/add/single",
     dependencies=[
-        Depends(rate_limit("80/minute")),
-        Depends(cache_evict(eviction_group="products",ttl=600))
+        Depends(rate_limit("25/minute")),
+        Depends(cache_evict(eviction_group="products"))
     ]
 )
 async def insert_single_product(value:ProductsCreate,db:AsyncSession=Depends(get_session)):
@@ -69,8 +68,8 @@ async def insert_single_product(value:ProductsCreate,db:AsyncSession=Depends(get
 @router.post(
     "/add/multi",
     dependencies=[
-        Depends(rate_limit("80/minute")),
-        Depends(cache_evict(eviction_group="products",ttl=600))
+        Depends(rate_limit("25/minute")),
+        Depends(cache_evict(eviction_group="products"))
     ]
 )
 async def insert_multi_products(values:list[ProductsCreate],db:AsyncSession=Depends(get_session)):
@@ -84,8 +83,8 @@ async def insert_multi_products(values:list[ProductsCreate],db:AsyncSession=Depe
 @router.patch(
     "/update/id",
     dependencies=[
-        Depends(rate_limit("60/minute")),
-        Depends(cache_evict(eviction_group="products",ttl=600))
+        Depends(rate_limit("25/minute")),
+        Depends(cache_evict(eviction_group="products"))
     ]
 )
 async def update_product_by_id(id:str,update_model:ProductsUpdate,db:AsyncSession=Depends(get_session)):
@@ -96,8 +95,8 @@ async def update_product_by_id(id:str,update_model:ProductsUpdate,db:AsyncSessio
 @router.delete(
     "/delete/id",
     dependencies=[
-        Depends(rate_limit("60/minute")),
-        Depends(cache_evict(eviction_group="products",ttl=600))
+        Depends(rate_limit("25/minute")),
+        Depends(cache_evict(eviction_group="products"))
     ]
 )
 async def delele_proudtc_by_id(id:str,db:AsyncSession=Depends(get_session)):
