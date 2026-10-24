@@ -13,7 +13,7 @@ router=APIRouter()
 @router.get(
     "/get/multi",
     dependencies=[
-        Depends(rate_limit("50/minute")),
+        Depends(rate_limit("50/minute",on_limit_exceeded={"hint":"too many reqs from you wait a bit"})),
         Depends(cache(eviction_group="products",ttl=600))
     ]
 )
@@ -24,7 +24,7 @@ async def get_multi_products(db:AsyncSession=Depends(get_session),skip:int=0,lim
 @router.get(
     "/get/price",    
     dependencies=[
-        Depends(rate_limit("50/minute")),
+        Depends(rate_limit("50/minute",on_limit_exceeded={"hint":"too many reqs from you wait a bit"})),
         Depends(cache(eviction_group="products",ttl=600))
     ]
 )
@@ -35,7 +35,7 @@ async def get_products_by_price(db:AsyncSession=Depends(get_session),skip:int=0,
 @router.get(
     "/get/name",    
     dependencies=[
-        Depends(rate_limit("50/minute")),
+        Depends(rate_limit("50/minute",on_limit_exceeded={"hint":"too many reqs from you wait a bit"})),
         Depends(cache(eviction_group="products",ttl=600))
     ]
 )
@@ -57,7 +57,7 @@ async def get_product_by_id(id:str,db:AsyncSession=Depends(get_session)):
 @router.post(
     "/add/single",
     dependencies=[
-        Depends(rate_limit("25/minute")),
+        Depends(rate_limit("25/minute",on_limit_exceeded={"hint":"too many reqs from you wait a bit"})),
         Depends(cache_evict(eviction_group="products"))
     ]
 )
@@ -68,7 +68,7 @@ async def insert_single_product(value:ProductsCreate,db:AsyncSession=Depends(get
 @router.post(
     "/add/multi",
     dependencies=[
-        Depends(rate_limit("25/minute")),
+        Depends(rate_limit("25/minute",on_limit_exceeded={"hint":"too many reqs from you wait a bit"})),
         Depends(cache_evict(eviction_group="products"))
     ]
 )
@@ -83,7 +83,7 @@ async def insert_multi_products(values:list[ProductsCreate],db:AsyncSession=Depe
 @router.patch(
     "/update/id",
     dependencies=[
-        Depends(rate_limit("25/minute")),
+        Depends(rate_limit("25/minute",on_limit_exceeded={"hint":"too many reqs from you wait a bit"})),
         Depends(cache_evict(eviction_group="products"))
     ]
 )
@@ -95,11 +95,10 @@ async def update_product_by_id(id:str,update_model:ProductsUpdate,db:AsyncSessio
 @router.delete(
     "/delete/id",
     dependencies=[
-        Depends(rate_limit("25/minute")),
+        Depends(rate_limit("25/minute",on_limit_exceeded={"hint":"too many reqs from you wait a bit"})),
         Depends(cache_evict(eviction_group="products"))
     ]
 )
 async def delele_proudtc_by_id(id:str,db:AsyncSession=Depends(get_session)):
     return await crud.products.remove_async(db,id)
-
 
