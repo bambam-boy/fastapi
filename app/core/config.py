@@ -1,6 +1,11 @@
 from pydantic_settings import SettingsConfigDict, BaseSettings
-from pydantic import ValidationInfo,field_validator,PostgresDsn
-from typing import Dict,Any
+from pydantic import (
+     ValidationInfo,
+     field_validator,
+     PostgresDsn,
+     SecretStr
+)
+
 
 class Configs(BaseSettings):
     DB_HOST:str
@@ -8,6 +13,10 @@ class Configs(BaseSettings):
     DB_USERNAME:str
     DB_PASSWORD:str
     DB_PATH:str
+    SECRET_KEY:SecretStr
+
+    ALGORITHM:str="HS256"
+    exp_token_min:int=360
 
     REDIS_URL:str
 

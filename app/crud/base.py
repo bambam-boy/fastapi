@@ -1,4 +1,4 @@
-from typing import TypeVar,Generic,Awaitable,Any
+from typing import TypeVar,Generic,Awaitable,Any,Dict
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Session
 from app.db.baseclass import Base
@@ -121,13 +121,17 @@ class CRUDBase(Generic[ModelType,ModelCreateType,ModelUpdateType]):
     def create(self,db:Session|AsyncSession,values:ModelCreateType)->ModelType|Awaitable[ModelType]:
         if isinstance(db,AsyncSession):
             return self.create_async(db,values)
-        db_obj=self.model(**values.model_dump(exclude_unset=True))
+        if not isinstance(values,Dict):
+            values=values.model_dump(exclude_unset=True)
+        db_obj=self.model(**values)
         db.add(db_obj)
         return self.commit_and_refresh(db_obj,db)
 
         
-    async def create_async(self,db:AsyncSession,values:ModelCreateType)->ModelType:
-        db_obj=self.model(**values.model_dump(exclude_unset=True))
+    async def create_async(self,db:AsyncSession,values:ModelCreateType|Dict[str,Any])->ModelType:
+        if not isinstance(values,Dict):
+            values=values.model_dump(exclude_unset=True)
+        db_obj=self.model(**values)
         db.add(db_obj)
         return await self.commit_and_refresh_async(db_obj,db)
 

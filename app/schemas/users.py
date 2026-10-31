@@ -1,7 +1,6 @@
 from pydantic import BaseModel
 
 
-
 class UsersBase(BaseModel):
     username:str
     email:str
@@ -16,3 +15,11 @@ class UsersUpdate(UsersBase):
     useranme:str|None=None
     email:str|None=None
     password:str|None=None
+
+
+class UsersResponcePublic(BaseModel):
+    username:str
+
+
+class UsersResponcePrivete(UsersResponcePublic):
+    email:str
